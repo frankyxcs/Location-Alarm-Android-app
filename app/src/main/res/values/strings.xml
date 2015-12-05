@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Location Alarm 2</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="Hint_Enter_Title">Enter Title</string>
+    <string name="Text_Title">Title</string>
+</resources>
