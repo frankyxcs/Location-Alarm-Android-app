@@ -32,4 +32,6 @@ public final class Constants {
         public static final String LOCATION_NAME = ACTION + ".LOCATION_NAME"+EXTRA;
 
     }*/
+
+    public static final String ALARM_LISTFILE = PACKAGE_NAME + ".ALARMLIST";
 }

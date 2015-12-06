@@ -16,10 +16,13 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.keerthan.locationalarm2.Alarms.Alarm;
+
+import java.io.IOException;
 
 public class SetAlarmActivity extends AppCompatActivity {
 
@@ -35,6 +38,8 @@ public class SetAlarmActivity extends AppCompatActivity {
     TextView rangeText;
     SeekBar rangeSeekBar;
     Button selectRingtone;
+    Button saveBtn;
+    Button cancelBtn;
 
     float range;
     LatLng position;
@@ -62,10 +67,10 @@ public class SetAlarmActivity extends AppCompatActivity {
         latitudeTV = (TextView) findViewById(R.id.TV_latitude);
         longitudeTV = (TextView) findViewById(R.id.TV_longitude);
 
-        range = 0.1f;
+        saveBtn = (Button) findViewById(R.id.BT_save);
+        cancelBtn = (Button) findViewById(R.id.BT_cancel);
 
-        alarm = new Alarm(position, range, "untitled", ringtone);
-        alarm.setIsActive(true);
+        range = 0.1f;
 
         String latitude = "Latitude : " + String.valueOf(position.latitude);
         String longitude = "Longitude : " + String.valueOf(position.longitude);
@@ -113,6 +118,30 @@ public class SetAlarmActivity extends AppCompatActivity {
             }
         });
 
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Canceled", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alarm = new Alarm(position, range, label.getText().toString(), ringtoneUri);
+                alarm.setIsActive(enable.isChecked());
+                try {
+                    alarm.SaveToInternal(getApplicationContext());
+                    Toast.makeText(getApplicationContext(), "Alarm has been saved", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finish();
+            }
+        });
+
     }
 
     void setupRingtonePicker(){
@@ -151,4 +180,6 @@ public class SetAlarmActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }

@@ -35,15 +35,16 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
     private float range;
 
     private Ringtone ringtone;
+    private Uri ringtoneUri;
     private String name;
 
     private boolean isActive;
 
-    public Alarm(LatLng position, float range, String name, Ringtone ringtone) {
+    public Alarm(LatLng position, float range, String name, Uri ringtoneUri) {
         this.position = position;
         this.range = range;
         this.name = name;
-        this.ringtone = ringtone;
+        this.ringtoneUri = ringtoneUri;
         isActive = true;
     }
 
@@ -86,13 +87,12 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
 
     public void setIsActive(boolean isActive) {   this.isActive = isActive;}
 
-
     public void SaveToInternal(Context context) throws IOException {
-        InternalStorage.writeObject(context, "KEY", this);
+        InternalStorage.writeObject(context, Constants.ALARM_LISTFILE, this);
     }
 
     public static Alarm Retrieve(Context context) throws IOException, ClassNotFoundException {
-        return (Alarm) InternalStorage.readObject(context, "KEY");
+        return (Alarm) InternalStorage.readObject(context, Constants.ALARM_LISTFILE);
     }
 
 
@@ -139,7 +139,7 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
 
     private void ring(Context ActivityContext){
         sendNotification(name, ActivityContext);
-        startRingtonePlayback();
+        startRingtonePlayback(ActivityContext);
         showDialog();
     }
 
@@ -185,8 +185,9 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
         mNotificationManager.notify(0, builder.build());
     }
 
-    protected void startRingtonePlayback(){
-
+    protected void startRingtonePlayback(Context ActivityContext){
+        ringtone = RingtoneManager.getRingtone(ActivityContext,ringtoneUri);
+        ringtone.play();
     }
 
     protected void showDialog(){
