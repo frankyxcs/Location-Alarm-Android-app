@@ -34,7 +34,7 @@ public class AlarmTab extends Fragment{
         Log.i(TAG, "onCreateView");
         alarmListView = (ListView) getActivity().findViewById(R.id.ListView_Alarms);
 
-        LinkedList<Alarm> alarmLinkedList =  Alarm.RetrieveList();
+        LinkedList<Alarm> alarmLinkedList =  Alarm.RetrieveList(getActivity().getApplicationContext());
 
         if(alarmLinkedList!=null) {
             Alarm[] alarms = (Alarm[]) alarmLinkedList.toArray();

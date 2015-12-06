@@ -34,4 +34,12 @@ public final class Constants {
     }*/
 
     public static final String ALARM_LISTFILE = PACKAGE_NAME + ".ALARMLIST";
+    public static final String DBNAME = "alarms";
+    public static final int DBVERSION = 1;
+    public static final String DB_TITLE = "title";
+    public static final String DB_LATITUDE = "latitude";
+    public static final String DB_LONGITUDE = "longitude";
+    public static final String DB_ENABLED = "enabled";
+    public static final String DB_RANGE = "range";
+    public static final String DB_RINGTONE_URI = "ringtoneUri";
 }

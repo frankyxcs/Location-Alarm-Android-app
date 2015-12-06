@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.GpsStatus;
@@ -48,6 +49,7 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
         isActive = true;
     }
 
+    public Uri getRingtoneUri(){ return ringtoneUri; }
 
     public LatLng getPosition() {
         return position;
@@ -87,13 +89,26 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
 
     public void setIsActive(boolean isActive) {   this.isActive = isActive;}
 
-    public void SaveToInternal(Context context) throws IOException {
-        InternalStorage.writeObject(context, Constants.ALARM_LISTFILE, this);
+    public boolean SaveToInternal(Context context) throws IOException {
+        //InternalStorage.writeObject(context, Constants.ALARM_LISTFILE, this);
+        SQLstorage storage = new SQLstorage(context);
+        return storage.saveAlarm(this);
     }
 
-    public static Alarm Retrieve(Context context) throws IOException, ClassNotFoundException {
+    /*public static Alarm Retrieve(Context context) throws IOException, ClassNotFoundException {
         return (Alarm) InternalStorage.readObject(context, Constants.ALARM_LISTFILE);
-    }
+    }*/
+
+    /*public Alarm Retrieve(Context context, String title, String){
+        SQLstorage storage = new SQLstorage(context);
+        Cursor cursor = storage.retrieveAlarm(this.getName(), this.getPosition().latitude, this.getPosition().longitude);
+        int numberOfMatches = cursor.getCount();
+        if(numberOfMatches != 0){
+            //match found!
+
+
+        }
+    }*/
 
 
     public static void setAlarm(Context context, LatLng position){
@@ -110,15 +125,35 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
 
     }
 
-    public static LinkedList<Alarm> RetrieveList(){
+    public static LinkedList<Alarm> RetrieveList(Context context){
         //needs to be completed
         Log.d(TAG,"RetrieveList - Retrieving list of alarms");
         LinkedList<Alarm> list = null;
+        SQLstorage sqLstorage = new SQLstorage(context);
+        Cursor cursor = sqLstorage.getTable();
+        if(cursor.getCount()!=0){
+            //table is nonempty
+            int rows = cursor.getCount();
+            int columns = cursor.getColumnCount();
+            for(int i = 0; i<=rows; i++){
+                String title = cursor.getString(0);
+                Double latitude = cursor.getDouble(1);
+                Double longitude = cursor.getDouble(2);
+                Boolean enabled = Boolean.parseBoolean(cursor.getString(3));
+                Float range = cursor.getFloat(4);
+                Uri ringtoneUri = Uri.parse(cursor.getString(5));
+
+                LatLng position = new LatLng(latitude, longitude);
+                Alarm alarm = new Alarm(position, range, title, ringtoneUri);
+
+                list.add(alarm);
+            }
+        }
         return list;
     }
 
     public static void triggerAlarms(List<String> AlarmIDs, Context ActivityContext){
-        LinkedList<Alarm> alarmLinkedList = Alarm.RetrieveList();
+        LinkedList<Alarm> alarmLinkedList = Alarm.RetrieveList(ActivityContext);
         for(Alarm alarm : alarmLinkedList){
             boolean triggered = false;
 

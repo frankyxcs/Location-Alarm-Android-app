@@ -259,7 +259,7 @@ public class MapTabFragment extends Fragment implements GoogleApiClient.Connecti
     public void ShowAlarms() {
         Log.d(TAG, "ShowAlarms");
         if (map != null) {
-            LinkedList<Alarm> list = Alarm.RetrieveList();                  //holds the list of active alarms
+            LinkedList<Alarm> list = Alarm.RetrieveList(getActivity().getApplicationContext());                  //holds the list of active alarms
             if (list != null) {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for (Alarm alarm : list) {
