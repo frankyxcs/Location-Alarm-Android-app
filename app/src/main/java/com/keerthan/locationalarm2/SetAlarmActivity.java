@@ -111,13 +111,6 @@ public class SetAlarmActivity extends AppCompatActivity {
             }
         });
 
-        enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                alarm.setIsActive(isChecked);
-            }
-        });
-
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override

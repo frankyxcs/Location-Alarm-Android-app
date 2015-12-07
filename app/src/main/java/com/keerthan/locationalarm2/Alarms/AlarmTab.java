@@ -1,5 +1,6 @@
 package com.keerthan.locationalarm2.Alarms;
 
+import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,30 +31,36 @@ public class AlarmTab extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        Log.i(TAG, "onCreateView");
+        Log.i(TAG, "onCreateView in AlarmTab");
         alarmListView = (ListView) getActivity().findViewById(R.id.ListView_Alarms);
+        updateList();
+        return inflater.inflate(R.layout.alarm_screen, container, false);
+    }
 
+    private void updateList(){
+        Log.i(TAG, "updateList");
         LinkedList<Alarm> alarmLinkedList =  Alarm.RetrieveList(getActivity().getApplicationContext());
 
         if(alarmLinkedList!=null) {
             Alarm[] alarms = (Alarm[]) alarmLinkedList.toArray();
             alarmListAdapter = new MyAdapter(getActivity(), R.layout.alarm_row_layout, alarms);
-            alarmListView.setAdapter(alarmListAdapter);
-            alarmListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //call to set/edit alarm activity
-                }
-            });
+            setupListView();
             Log.d(TAG, "Successfully placed non-null linked list on listview");
         }
         else{
             Log.e(TAG, "LinkedList is empty.");
             alarmListAdapter = new ArrayAdapter<Alarm>(getActivity(), R.layout.alarm_row_layout);
         }
+    }
 
-        return inflater.inflate(R.layout.alarm_screen, container, false);
+    private void setupListView(){
+        alarmListView.setAdapter(alarmListAdapter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateList();
     }
 }
 

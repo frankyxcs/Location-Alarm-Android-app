@@ -131,22 +131,25 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
         LinkedList<Alarm> list = null;
         SQLstorage sqLstorage = new SQLstorage(context);
         Cursor cursor = sqLstorage.getTable();
-        if(cursor.getCount()!=0){
+        if(cursor.getCount()> 0){
             //table is nonempty
             int rows = cursor.getCount();
             int columns = cursor.getColumnCount();
-            for(int i = 0; i<=rows; i++){
-                String title = cursor.getString(0);
-                Double latitude = cursor.getDouble(1);
-                Double longitude = cursor.getDouble(2);
-                Boolean enabled = Boolean.parseBoolean(cursor.getString(3));
-                Float range = cursor.getFloat(4);
-                Uri ringtoneUri = Uri.parse(cursor.getString(5));
+            while(!cursor.isAfterLast()){
+                String title = cursor.getString(cursor.getColumnIndex(Constants.DB_TITLE));
+                Double latitude = cursor.getDouble(cursor.getColumnIndex(Constants.DB_LATITUDE));
+                Double longitude = cursor.getDouble(cursor.getColumnIndex(Constants.DB_LONGITUDE));
+                Boolean enabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(Constants.DB_ENABLED)));
+                Float range = cursor.getFloat(cursor.getColumnIndex(Constants.DB_RANGE));
+                Uri ringtoneUri = Uri.parse(cursor.getString(cursor.getColumnIndex(Constants.DB_RINGTONE_URI)));
 
                 LatLng position = new LatLng(latitude, longitude);
                 Alarm alarm = new Alarm(position, range, title, ringtoneUri);
+                alarm.setIsActive(enabled);
 
                 list.add(alarm);
+
+                cursor.moveToNext();
             }
         }
         return list;
