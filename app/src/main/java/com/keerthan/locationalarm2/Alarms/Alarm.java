@@ -128,13 +128,15 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
     public static LinkedList<Alarm> RetrieveList(Context context){
         //needs to be completed
         Log.d(TAG,"RetrieveList - Retrieving list of alarms");
-        LinkedList<Alarm> list = null;
+        LinkedList<Alarm> list = new LinkedList<Alarm>();
         SQLstorage sqLstorage = new SQLstorage(context);
         Cursor cursor = sqLstorage.getTable();
+        Log.d(TAG, String.valueOf(cursor.getCount()));
         if(cursor.getCount()> 0){
             //table is nonempty
             int rows = cursor.getCount();
             int columns = cursor.getColumnCount();
+            cursor.moveToFirst();
             while(!cursor.isAfterLast()){
                 String title = cursor.getString(cursor.getColumnIndex(Constants.DB_TITLE));
                 Double latitude = cursor.getDouble(cursor.getColumnIndex(Constants.DB_LATITUDE));
@@ -151,6 +153,8 @@ public class Alarm implements Serializable { // It inherits from the Serializabl
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         }
         return list;
     }

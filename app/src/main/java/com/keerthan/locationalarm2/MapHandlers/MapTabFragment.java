@@ -126,7 +126,12 @@ public class MapTabFragment extends Fragment implements GoogleApiClient.Connecti
             map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setCompassEnabled(true);
 
-            ShowAlarms();
+            map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    ShowAlarms();
+                }
+            });
 
 
 
@@ -179,7 +184,7 @@ public class MapTabFragment extends Fragment implements GoogleApiClient.Connecti
                 @Override
                 public void onLocationChanged(Location location) {
                     mCurrentLocation = location;
-                    Toast.makeText(getActivity(), mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
             return true;

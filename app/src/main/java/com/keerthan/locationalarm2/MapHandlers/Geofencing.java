@@ -42,7 +42,7 @@ public class Geofencing implements ResultCallback<Status> {
     protected void populateGeofenceList(){
         Log.i(TAG, "populateGeofenceList");
 
-        geofenceLinkedList = null;
+        geofenceLinkedList = new LinkedList<Geofence>();
         LinkedList<Alarm> alarmLinkedList = Alarm.RetrieveList(context);
 
         if(alarmLinkedList != null) {

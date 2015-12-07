@@ -1,6 +1,6 @@
 package com.keerthan.locationalarm2.Alarms;
 
-import android.app.ListFragment;
+import android.support.v4.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,7 +21,7 @@ import com.keerthan.locationalarm2.R;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AlarmTab extends Fragment{
+public class AlarmTab extends android.support.v4.app.ListFragment {
 
     private static final String TAG = "AlarmTab";
 
@@ -32,8 +32,8 @@ public class AlarmTab extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView in AlarmTab");
-        alarmListView = (ListView) getActivity().findViewById(R.id.ListView_Alarms);
         updateList();
+        setListAdapter(alarmListAdapter);
         return inflater.inflate(R.layout.alarm_screen, container, false);
     }
 
@@ -42,9 +42,9 @@ public class AlarmTab extends Fragment{
         LinkedList<Alarm> alarmLinkedList =  Alarm.RetrieveList(getActivity().getApplicationContext());
 
         if(alarmLinkedList!=null) {
-            Alarm[] alarms = (Alarm[]) alarmLinkedList.toArray();
+            Alarm[] alarms = convertLinkedListtoArray(alarmLinkedList);
             alarmListAdapter = new MyAdapter(getActivity(), R.layout.alarm_row_layout, alarms);
-            setupListView();
+           // setupListView();
             Log.d(TAG, "Successfully placed non-null linked list on listview");
         }
         else{
@@ -53,9 +53,18 @@ public class AlarmTab extends Fragment{
         }
     }
 
-    private void setupListView(){
-        alarmListView.setAdapter(alarmListAdapter);
+    private Alarm[] convertLinkedListtoArray(LinkedList<Alarm> alarmLinkedList){
+        Alarm[] alarms = new Alarm[alarmLinkedList.size()];
+        int i=0;
+        while(alarmLinkedList.size()!=0){
+            alarms[i++] = alarmLinkedList.removeFirst();
+        }
+        return alarms;
     }
+
+    /*private void setupListView(){
+        alarmListView.setAdapter(alarmListAdapter);
+    }*/
 
     @Override
     public void onStart() {
